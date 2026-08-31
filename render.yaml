@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: tickers
+    runtime: node
+    plan: free
+    buildCommand: ""
+    startCommand: node server/index.js
+    autoDeploy: true
+    envVars:
+      # TAPE_MINT stays unset until $TAPE launches — set it in the Render dashboard
+      # to flip live:true and light the CA bar.
+      - key: NODE_VERSION
+        value: "20"

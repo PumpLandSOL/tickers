@@ -1,0 +1,91 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Exchange Floor — TICKERS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--parch:#f0e6cf;--parch2:#e8dcc0;--ink:#2b2014;--faint:#6b5a41;--brass:#8a6a2a;--ox:#6e2b1e;--line:#3a2c1c}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--parch);color:var(--ink);font-family:'Old Standard TT',serif;line-height:1.6;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(58,44,28,.05) 28px)}
+.wrap{max-width:1060px;margin:0 auto;padding:0 16px 60px}
+header{display:flex;align-items:baseline;gap:16px;padding:22px 4px 12px;border-bottom:2px solid var(--line);flex-wrap:wrap}
+header .brand{font-size:26px;font-weight:700;letter-spacing:.14em;text-decoration:none;color:var(--ink)}
+header .tag{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.18em;color:var(--faint)}
+header nav{margin-left:auto;font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.12em}
+header nav a{color:var(--ink);text-decoration:none;margin-left:18px;border-bottom:1px solid var(--line)}
+.ca{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.1em;text-align:center;border:1px dashed var(--line);
+  padding:8px;margin:14px 0;color:var(--faint)}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin:16px 0}
+.card{border:2px solid var(--line);background:var(--parch2);box-shadow:4px 4px 0 rgba(43,32,20,.14);padding:14px 16px}
+.card .k{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase}
+.card .v{font-size:30px;font-weight:700;line-height:1.2}
+.card .s{font-size:12.5px;color:var(--faint);font-style:italic}
+.row{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin:0 0 16px}
+h2{font-size:14px;letter-spacing:.22em;text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:12px}
+.rot{display:flex;flex-wrap:wrap;gap:6px}
+.rot span{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.08em;border:1px solid var(--line);padding:4px 9px;background:var(--parch)}
+.rot span.next{background:var(--ink);color:var(--parch)}
+.rot span.done{opacity:.45}
+button{font-family:'Special Elite',monospace;font-size:14px;letter-spacing:.14em;color:var(--parch);background:var(--ink);
+  border:2px solid var(--ink);padding:12px 26px;cursor:pointer;width:100%}
+button:hover{background:var(--ox);border-color:var(--ox)}
+button:disabled{opacity:.5;cursor:not-allowed}
+input{font-family:'Special Elite',monospace;font-size:13px;width:100%;padding:10px;border:1px solid var(--line);background:var(--parch);color:var(--ink);margin-bottom:10px}
+.note{font-size:13px;font-style:italic;color:var(--faint);margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid rgba(58,44,28,.25)}
+td b{color:var(--ox)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:14px}
+.machine{border:2px solid var(--line);background:var(--parch2);box-shadow:4px 4px 0 rgba(43,32,20,.14);padding:12px;text-align:center}
+.machine .serial{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.14em}
+.machine .traits{font-size:11.5px;font-style:italic;color:var(--faint);line-height:1.5;margin-top:4px}
+.machine .vault{font-family:'Special Elite',monospace;font-size:11px;color:var(--ox);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--parch);
+  font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.1em;padding:12px 22px;display:none;z-index:9}
+@media(max-width:860px){.grid{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}}
+</style></head><body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/">TICKERS</a>
+    <span class="tag">THE EXCHANGE FLOOR · $TAPE</span>
+    <nav><a href="/">Front page</a><a href="/docs">Specification</a></nav>
+  </header>
+  <div class="ca" id="ca">$TAPE CONTRACT — TO BE ANNOUNCED. THE MACHINES WAIT.</div>
+
+  <div class="grid">
+    <div class="card"><div class="k">Tickers wound</div><div class="v" id="wound">—</div><div class="s" id="remaining"></div></div>
+    <div class="card"><div class="k">$TAPE burned</div><div class="v" id="burned">—</div><div class="s" id="burnedPct"></div></div>
+    <div class="card"><div class="k">The pot</div><div class="v" id="pot">—</div><div class="s">spends all at 0.05 ETH</div></div>
+    <div class="card"><div class="k">Printed to vaults</div><div class="v" id="spent">—</div><div class="s" id="rounds"></div></div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h2>The rotation — next print</h2>
+      <div class="rot" id="rot"></div>
+      <div class="note">When the pot clears the trigger it buys the highlighted stock and divides it equally, one share of the purchase to every wound machine's vault. Then the wheel advances.</div>
+    </div>
+    <div class="card">
+      <h2>Wind a ticker</h2>
+      <input id="owner" placeholder="YOUR MARK (WALLET / NAME)" maxlength="44">
+      <button id="windBtn">WIND — BURN 300,000 $TAPE + 0.02 ETH</button>
+      <div class="note">The burn happens inside the wind: the coin is destroyed before the machine exists. 0.018 ETH of the surcharge goes to the pot.</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <h2>Ledger of prints</h2>
+    <table><thead><tr><th>№</th><th>Stock</th><th>Spent (ETH)</th><th>Per ticker</th><th>Machines</th><th>When</th></tr></thead>
+    <tbody id="ledger"><tr><td colspan="6" style="font-style:italic;color:var(--faint)">No prints yet — the pot is winding up.</td></tr></tbody></table>
+  </div>
+
+  <div class="card">
+    <h2>The fleet</h2>
+    <div class="gallery" id="gallery"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body></html>

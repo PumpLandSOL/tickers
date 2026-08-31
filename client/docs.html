@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Specification — TICKERS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--parch:#f0e6cf;--parch2:#e8dcc0;--ink:#2b2014;--faint:#6b5a41;--ox:#6e2b1e;--line:#3a2c1c}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--parch);color:var(--ink);font-family:'Old Standard TT',serif;line-height:1.7;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(58,44,28,.05) 28px)}
+.sheet{max-width:760px;margin:26px auto 60px;background:var(--parch2);border:2px solid var(--line);
+  box-shadow:6px 6px 0 rgba(43,32,20,.18);padding:36px 44px 44px}
+.no{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.22em;color:var(--faint);text-align:center}
+h1{font-size:34px;font-weight:700;letter-spacing:.12em;text-align:center;margin:8px 0 4px}
+.sub{font-style:italic;text-align:center;color:var(--faint);margin-bottom:24px}
+h2{font-size:15px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:6px;margin:30px 0 10px}
+p{font-size:15.5px;margin-bottom:12px}
+p b,li b{color:var(--ox)}
+ul{margin:0 0 12px 24px;font-size:15.5px}
+li{margin:6px 0}
+.plate{font-family:'Special Elite',monospace;font-size:13px;background:var(--parch);border:1px solid var(--line);padding:14px 16px;margin:14px 0;letter-spacing:.04em}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+th{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid rgba(58,44,28,.25)}
+a{color:var(--ox)}
+nav{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.12em;text-align:center;margin-bottom:8px}
+nav a{margin:0 10px;color:var(--ink)}
+footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-family:'Special Elite',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--faint);text-align:center;line-height:1.9}
+</style></head><body>
+<div class="sheet">
+  <nav><a href="/">FRONT PAGE</a> · <a href="/app">EXCHANGE FLOOR</a></nav>
+  <div class="no">SPECIFICATION No. TAPE-3333 · BE IT KNOWN THAT:</div>
+  <h1>THE SPECIFICATION</h1>
+  <div class="sub">Being a full and exact description of the TICKERS machine and its economy.</div>
+
+  <h2>Art. I — The Coin</h2>
+  <p><b>$TAPE</b> is a single fungible coin of fixed supply, <b>1,000,000,000</b>, minted on Robinhood Chain. It is the only way in. No presale, no allocation, no second coin.</p>
+
+  <h2>Art. II — The Wind (burn-to-mint)</h2>
+  <p>Winding a ticker converts coin into machine. Each wind <b>burns 300,000 $TAPE permanently</b> and pays a <b>0.02 ETH</b> surcharge. The burn is executed inside the wind instruction itself — the transaction is all-or-nothing, so the coin is destroyed before the machine exists. Only <b>3,333 tickers</b> will ever be wound; a full fleet retires <b>999,900,000 $TAPE</b> — essentially the entire supply reduced to machines.</p>
+  <div class="plate">WIND = BURN 300,000 $TAPE + 0.02 ETH → TICKER No. N (PERMANENT, TRANSFERABLE, PRINTING)</div>
+
+  <h2>Art. III — The Pot</h2>
+  <p>All revenue converges on one pot:</p>
+  <ul>
+    <li><b>80%</b> of $TAPE creator fees (20% keeps the lights on),</li>
+    <li><b>0.018 ETH</b> of every 0.02 ETH wind surcharge,</li>
+    <li><b>100%</b> of secondary-market royalties.</li>
+  </ul>
+  <p>The moment the pot clears <b>0.05 ETH</b>, it is spent — all of it, in one purchase.</p>
+
+  <h2>Art. IV — The Rotation</h2>
+  <p>The pot buys Robinhood Chain tokenized equities in a fixed twelve-stop rotation, then returns to the top:</p>
+  <table><thead><tr><th>Stop</th><th>Asset</th><th>Stop</th><th>Asset</th></tr></thead><tbody>
+    <tr><td>1</td><td>NVDA — NVIDIA</td><td>7</td><td>MSTR — Strategy</td></tr>
+    <tr><td>2</td><td>AAPL — Apple</td><td>8</td><td>HOOD — Robinhood</td></tr>
+    <tr><td>3</td><td>TSLA — Tesla</td><td>9</td><td>COIN — Coinbase</td></tr>
+    <tr><td>4</td><td>SPY — S&amp;P 500</td><td>10</td><td>NFLX — Netflix</td></tr>
+    <tr><td>5</td><td>GME — GameStop</td><td>11</td><td>GLD — Gold</td></tr>
+    <tr><td>6</td><td>PLTR — Palantir</td><td>12</td><td>TAPE — buyback &amp; burn</td></tr>
+  </tbody></table>
+  <p>Stop twelve buys <b>$TAPE itself and burns it</b>, closing the loop: the machines' own dividend wheel shrinks the coin that builds the machines.</p>
+
+  <h2>Art. V — The Print (distribution)</h2>
+  <p>Each purchase is divided <b>equally per machine</b> — not proportionally to anything. Ticker No. 1 and Ticker No. 3,333 receive the same print. Deliveries into each machine's vault are permissionless: one transaction per machine, and anybody may trigger them. Assets sit in the vault until the bearer withdraws.</p>
+
+  <h2>Art. VI — Why it works</h2>
+  <ul>
+    <li><b>Deflation with a purpose:</b> every machine costs 300,000 $TAPE of dead supply.</li>
+    <li><b>Real assets on the tape:</b> the pot buys stocks, not promises.</li>
+    <li><b>Flat prints:</b> no whale math — one machine, one share.</li>
+    <li><b>The twelfth stop:</b> the wheel itself buys and burns the coin.</li>
+  </ul>
+
+  <h2>Art. VII — Provenance</h2>
+  <p>The mechanism descends from <b>QUOTRONS</b> on Robinhood Chain (4,444 ERC-404 terminals) by way of <b>OTC Desks</b> on Solana (5,000 desks). TICKERS reaches one machine further back: Edison's Universal Stock Ticker, 1871 — the first machine that ever printed a price. The lineage is honored; the works are our own.</p>
+
+  <footer>TICKERS · $TAPE · NOT AN OFFERING OF SECURITIES · TOKENIZED EQUITIES ARE VOLATILE INSTRUMENTS<br>THE MACHINE PRINTS WHAT THE POT BUYS — NO MORE, NO LESS</footer>
+</div>
+</body></html>

@@ -1,0 +1,9 @@
+{
+  "name": "tickers",
+  "version": "1.0.0",
+  "description": "TICKERS ($TAPE) — 3,333 Edison stock tickers under glass. Burn $TAPE to wind a machine; the pot buys tokenized stocks in rotation and prints them equally to every wound ticker's vault.",
+  "main": "server/index.js",
+  "scripts": { "start": "node server/index.js" },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}
