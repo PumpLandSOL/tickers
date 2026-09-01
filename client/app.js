@@ -50,7 +50,9 @@ async function refresh() {
     if (s.rounds.length) {
       $('ledger').innerHTML = s.rounds.map((r) =>
         '<tr><td>' + r.n + '</td><td><b>' + r.sym + '</b> ' + r.name + '</td><td>' + r.sol.toFixed(4) +
-        '</td><td>' + r.perTicker.toFixed(6) + '</td><td>' + r.tickers + '</td><td>' + ago(r.at) + '</td></tr>').join('');
+        '</td><td>' + r.perTicker.toFixed(6) + '</td><td>' +
+        (r.goldenSerial ? '<b>★ No. ' + r.goldenSerial + '</b> +' + r.golden.toFixed(4) : '—') +
+        '</td><td>' + r.tickers + '</td><td>' + ago(r.at) + '</td></tr>').join('');
     }
 
     $('gallery').innerHTML = g.tickers.length ? g.tickers.slice().reverse().map((t) =>
@@ -58,8 +60,26 @@ async function refresh() {
       '<div class="serial">TICKER No. ' + t.serial + '</div>' +
       '<div class="traits">' + t.traits.wood + ' base · ' + t.traits.brass + '<br>' + t.traits.glass +
         (t.traits.quirk !== 'none' ? ' · ' + t.traits.quirk : '') + '</div>' +
-      '<div class="vault">VAULT ≈ ' + t.vaultSol.toFixed(4) + ' ETH in stock</div></div>').join('')
+      '<div class="gauge">GAUGE ' + t.gauge.toFixed(1) + '×' +
+        (t.goldenHits ? ' · ★ ' + t.goldenHits + ' golden' : '') + '</div>' +
+      '<div class="vault">VAULT ≈ ' + t.vaultSol.toFixed(4) + ' ETH in stock</div>' +
+      (t.gauge < (s.gaugeMax || 2)
+        ? '<button class="ow" data-id="' + t.id + '">OVERWIND — BURN 100,000 $TAPE (+0.1×)</button>'
+        : '<div class="gauge" style="color:#6e2b1e">FULLY WOUND · 2.0×</div>') +
+      '</div>').join('')
       : '<div style="font-style:italic;color:#6b5a41">No machines wound yet. Be the first on the floor.</div>';
+
+    document.querySelectorAll('.ow').forEach((b) => b.addEventListener('click', async () => {
+      b.disabled = true;
+      try {
+        const r = await (await fetch('/api/overwind', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id: b.dataset.id }),
+        })).json();
+        if (r.ok) { toast('OVERWOUND — No. ' + r.serial + ' NOW PRINTS AT ' + r.gauge.toFixed(1) + '×. 100,000 MORE $TAPE DESTROYED.'); lastPayload = ''; refresh(); }
+        else toast((r.error || 'the overwind failed').toUpperCase());
+      } catch (e) { toast('THE WIRE IS DOWN — TRY AGAIN'); }
+    }));
   } catch (e) {}
 }
 

@@ -23,6 +23,10 @@ const WIND_ETH = 0.02;               // ETH surcharge per wind (Robinhood Chain)
 const WIND_TO_POT = 0.9;             // share of surcharge → pot (0.018 ETH)
 const FEE_TO_POT = 0.80;             // creator-fee share → pot (20% protocol)
 const POT_TRIGGER = 0.05;            // ETH — pot spends ALL when it clears this
+const OVERWIND_BURN = 100_000;       // $TAPE per overwind (gauge +0.1×)
+const GAUGE_STEP = 0.1;
+const GAUGE_MAX = 2.0;               // print weight cap per machine
+const GOLDEN_CUT = 0.10;             // share of each print that goes to one drawn machine
 // the rotation: 12 tokenized equities (Robinhood Chain tokenized equities) + $TAPE itself closing the loop
 const ROTATION = [
   { sym: 'NVDA', name: 'NVIDIA' }, { sym: 'AAPL', name: 'Apple' },
@@ -95,11 +99,21 @@ function spinIfWound() {
     S.potSpentTotal += spend;
     const stock = ROTATION[S.rotationIdx % ROTATION.length];
     S.rotationIdx++;
-    const per = spend / S.tickers.length;
-    for (const t of S.tickers) t.vault[stock.sym] = +((t.vault[stock.sym] || 0) + per).toFixed(9);
+    // 90% split by gauge weight; 10% golden tape to one drawn machine
+    const golden = spend * GOLDEN_CUT;
+    const base = spend - golden;
+    const totalW = S.tickers.reduce((a, t) => a + (t.gauge || 1), 0);
+    for (const t of S.tickers) {
+      const share = base * ((t.gauge || 1) / totalW);
+      t.vault[stock.sym] = +((t.vault[stock.sym] || 0) + share).toFixed(9);
+    }
+    const winner = S.tickers[crypto.randomInt(S.tickers.length)];
+    winner.vault[stock.sym] = +((winner.vault[stock.sym] || 0) + golden).toFixed(9);
+    winner.goldenHits = (winner.goldenHits || 0) + 1;
     S.rounds.unshift({
       n: S.rounds.length + 1, sym: stock.sym, name: stock.name,
-      sol: +spend.toFixed(4), perTicker: +per.toFixed(6),
+      sol: +spend.toFixed(4), perTicker: +(base / totalW).toFixed(6),
+      golden: +golden.toFixed(6), goldenSerial: winner.serial,
       tickers: S.tickers.length, at: Date.now(),
     });
     if (S.rounds.length > 200) S.rounds.length = 200;
@@ -126,6 +140,7 @@ function state() {
     live: LIVE, mint: TAPE_MINT || null,
     cap: CAP, supply: SUPPLY, windBurn: WIND_BURN, windEth: WIND_ETH,
     potTrigger: POT_TRIGGER, feeToPot: FEE_TO_POT,
+    overwindBurn: OVERWIND_BURN, gaugeStep: GAUGE_STEP, gaugeMax: GAUGE_MAX, goldenCut: GOLDEN_CUT,
     wound: S.tickers.length, remaining: CAP - S.tickers.length,
     burned: S.burned, burnedPct: +((S.burned / SUPPLY) * 100).toFixed(3),
     pot: +S.pot.toFixed(5), potSpentTotal: +S.potSpentTotal.toFixed(4),
@@ -144,7 +159,7 @@ const server = http.createServer(async (req, res) => {
   if (p === '/api/tickers') {
     const list = S.tickers.map((t) => ({
       id: t.id, serial: t.serial, owner: t.owner, woundAt: t.woundAt,
-      traits: traits(t.serial),
+      traits: traits(t.serial), gauge: t.gauge || 1, goldenHits: t.goldenHits || 0,
       vaultSol: +Object.values(t.vault).reduce((a, b) => a + b, 0).toFixed(6),
     }));
     return json(res, 200, { tickers: list });
@@ -163,7 +178,7 @@ const server = http.createServer(async (req, res) => {
     const serial = S.tickers.length + 1;
     const t = {
       id: crypto.randomBytes(6).toString('hex'),
-      serial, owner, woundAt: Date.now(), vault: {},
+      serial, owner, woundAt: Date.now(), vault: {}, gauge: 1, goldenHits: 0,
     };
     // the burn happens inside the wind — the $TAPE is gone before the ticker exists
     S.burned += WIND_BURN;
@@ -172,6 +187,18 @@ const server = http.createServer(async (req, res) => {
     spinIfWound();
     save();
     return json(res, 200, { ok: true, ticker: { ...t, traits: traits(serial) } });
+  }
+
+  if (p === '/api/overwind' && req.method === 'POST') {
+    const body = await readBody(req);
+    const t = S.tickers.find((x) => x.id === body.id);
+    if (!t) return json(res, 404, { error: 'no such ticker' });
+    if ((t.gauge || 1) >= GAUGE_MAX) return json(res, 400, { error: 'gauge is at its 2.0× maximum' });
+    // overwind: another 100,000 $TAPE into the fire, gauge steps up 0.1×
+    S.burned += OVERWIND_BURN;
+    t.gauge = +Math.min(GAUGE_MAX, (t.gauge || 1) + GAUGE_STEP).toFixed(2);
+    save();
+    return json(res, 200, { ok: true, serial: t.serial, gauge: t.gauge });
   }
 
   // static
