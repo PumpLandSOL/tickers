@@ -14,6 +14,8 @@ const PORT = process.env.PORT || 8192;
 const DATA_PATH = process.env.DATA_PATH || path.join(__dirname, '..', 'data.json');
 const TAPE_MINT = process.env.TAPE_MINT || '';            // set at launch — lights the CA bar
 const LIVE = !!TAPE_MINT;
+const TREASURY = (process.env.TREASURY_WALLET || '').toLowerCase(); // set → winds require a real ETH tx
+const RPC = process.env.RH_RPC_URL || 'https://rpc.mainnet.chain.robinhood.com'; // Robinhood Chain, id 4663
 
 // ── protocol constants ────────────────────────────────────────────────────────
 const CAP = 3333;                    // total tickers ever
@@ -48,6 +50,7 @@ function fresh() {
     rounds: [],                       // { n, sym, sol, perTicker, at, tickers }
     tickers: [],                      // { id, serial, owner, woundAt, vault:{SYM:amt} }
     feesSeen: 0,
+    usedTxs: [],                      // wind txs already redeemed (replay guard)
     startedAt: Date.now(),
   };
 }
@@ -121,6 +124,32 @@ function spinIfWound() {
 }
 setInterval(dripFees, 15_000);
 
+// ── on-chain verification: did this tx really pay the treasury? ──────────────
+async function rpc(method, params) {
+  const r = await fetch(RPC, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+  });
+  const j = await r.json();
+  if (j.error) throw new Error(j.error.message);
+  return j.result;
+}
+async function verifyWindTx(hash, from) {
+  if (!/^0x[0-9a-fA-F]{64}$/.test(hash)) return 'bad tx hash';
+  if ((S.usedTxs || []).includes(hash.toLowerCase())) return 'tx already redeemed';
+  const [tx, rcpt] = await Promise.all([
+    rpc('eth_getTransactionByHash', [hash]),
+    rpc('eth_getTransactionReceipt', [hash]),
+  ]);
+  if (!tx || !rcpt) return 'tx not found yet — wait for confirmation and retry';
+  if (rcpt.status !== '0x1') return 'tx failed on-chain';
+  if ((tx.to || '').toLowerCase() !== TREASURY) return 'tx does not pay the treasury';
+  if (from && (tx.from || '').toLowerCase() !== from.toLowerCase()) return 'tx sender mismatch';
+  const wei = BigInt(tx.value || '0x0');
+  if (wei < BigInt(Math.round(WIND_ETH * 1e6)) * 10n ** 12n) return 'tx value below the 0.02 ETH surcharge';
+  return null; // verified
+}
+
 // ── http ──────────────────────────────────────────────────────────────────────
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json' };
 function json(res, code, obj) {
@@ -171,9 +200,22 @@ const server = http.createServer(async (req, res) => {
     return json(res, 200, { ...t, traits: traits(t.serial) });
   }
 
+  if (p === '/api/config') {
+    return json(res, 200, { treasury: TREASURY || null, chainId: 4663, windEth: WIND_ETH, live: LIVE, mint: TAPE_MINT || null });
+  }
+
   if (p === '/api/wind' && req.method === 'POST') {
     const body = await readBody(req);
     if (S.tickers.length >= CAP) return json(res, 400, { error: 'all 3,333 tickers are wound' });
+    // treasury armed → the 0.02 ETH surcharge must be a real, verified on-chain payment
+    if (TREASURY) {
+      try {
+        const err = await verifyWindTx(String(body.tx || ''), String(body.owner || ''));
+        if (err) return json(res, 400, { error: err });
+      } catch (e) { return json(res, 502, { error: 'rpc error: ' + e.message }); }
+      S.usedTxs = S.usedTxs || [];
+      S.usedTxs.push(String(body.tx).toLowerCase());
+    }
     const owner = String(body.owner || 'anonymous').slice(0, 64);
     const serial = S.tickers.length + 1;
     const t = {

@@ -90,14 +90,48 @@ function toast(msg) {
   setTimeout(() => { t.style.display = 'none'; }, 3500);
 }
 
+// when the treasury is armed, the 0.02 ETH surcharge is a real on-chain payment
+let CFG = null;
+async function config() { if (!CFG) CFG = await (await fetch('/api/config')).json(); return CFG; }
+
+async function payTreasury(cfg) {
+  const eth = window.ethereum;
+  if (!eth) { toast('NO WALLET FOUND — INSTALL METAMASK OR RABBY'); return null; }
+  const acc = await eth.request({ method: 'eth_requestAccounts' });
+  if (!acc || !acc.length) { toast('CONNECT A WALLET TO WIND'); return null; }
+  try { await eth.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1237' }] }); } catch (e) {}
+  const wei = '0x' + (BigInt(Math.round(cfg.windEth * 1e6)) * 10n ** 12n).toString(16);
+  toast('CONFIRM THE 0.02 ETH SURCHARGE IN YOUR WALLET…');
+  const hash = await eth.request({
+    method: 'eth_sendTransaction',
+    params: [{ from: acc[0], to: cfg.treasury, value: wei }],
+  });
+  toast('PAID — WAITING FOR THE CHAIN TO CONFIRM…');
+  for (let i = 0; i < 60; i++) {
+    await new Promise((r) => setTimeout(r, 2000));
+    const rc = await eth.request({ method: 'eth_getTransactionReceipt', params: [hash] }).catch(() => null);
+    if (rc && rc.status === '0x1') return { from: acc[0], hash };
+    if (rc && rc.status === '0x0') { toast('THE PAYMENT FAILED ON-CHAIN'); return null; }
+  }
+  toast('STILL CONFIRMING — TRY THE WIND AGAIN IN A MOMENT');
+  return null;
+}
+
 $('windBtn').addEventListener('click', async () => {
   $('windBtn').disabled = true;
   try {
+    const cfg = await config();
+    let owner = $('owner').value || 'anonymous', tx;
+    if (cfg.treasury) {
+      const paid = await payTreasury(cfg);
+      if (!paid) { $('windBtn').disabled = false; return; }
+      owner = paid.from; tx = paid.hash;
+    }
     const r = await (await fetch('/api/wind', {
       method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ owner: $('owner').value || 'anonymous' }),
+      body: JSON.stringify({ owner, tx }),
     })).json();
-    if (r.ok) { toast('WOUND — TICKER No. ' + r.ticker.serial + ' IS PRINTING. 300,000 $TAPE DESTROYED.'); refresh(); }
+    if (r.ok) { toast('WOUND — TICKER No. ' + r.ticker.serial + ' IS PRINTING. 300,000 $TAPE DESTROYED.'); lastPayload = ''; refresh(); }
     else toast((r.error || 'the wind failed').toUpperCase());
   } catch (e) { toast('THE WIRE IS DOWN — TRY AGAIN'); }
   $('windBtn').disabled = false;
