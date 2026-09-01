@@ -39,6 +39,14 @@ a.btn:hover{background:var(--ox);border-color:var(--ox);color:var(--parch)}
   white-space:nowrap;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0;margin-top:26px}
 .tape span{display:inline-block;animation:tk 40s linear infinite}
 @keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.faq{padding:24px 54px 6px}
+.fh{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.22em;color:var(--faint);text-align:center;margin-bottom:14px}
+.faq details{border:1px solid var(--line);background:var(--parch);margin-bottom:10px}
+.faq summary{cursor:pointer;padding:13px 18px;font-size:16.5px;font-weight:700;list-style:none}
+.faq summary::before{content:'※ ';color:var(--ox)}
+.faq details[open] summary{border-bottom:1px solid var(--line)}
+.faq details p{padding:12px 18px 14px;font-size:15px;color:var(--faint);margin:0}
+.faq a{color:var(--ox)}
 footer{text-align:center;font-family:'Special Elite',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--faint);padding:22px 34px 0}
 @media(max-width:700px){.cols{flex-direction:column}.cols>div+div{border-left:0;border-top:1px solid var(--line)}h1{font-size:40px}}
 </style></head><body>
@@ -95,6 +103,39 @@ footer{text-align:center;font-family:'Special Elite',monospace;font-size:10.5px;
   <div class="cta">
     <a class="btn" href="/app">ENTER THE EXCHANGE FLOOR →</a>
     <a class="btn ghost" href="/docs">READ THE SPECIFICATION</a>
+  </div>
+
+  <div class="rule thin" style="margin-top:26px"></div>
+  <div class="faq">
+    <div class="fh te-cap">FIG. 4 — QUESTIONS PUT TO THE PATENT OFFICE</div>
+    <details open>
+      <summary>What is TICKERS, in one sentence?</summary>
+      <p>One coin ($TAPE), one machine: burning 300,000 $TAPE winds one of 3,333 permanent stock tickers, and every wound ticker collects an equal share of the stocks the pot buys.</p>
+    </details>
+    <details>
+      <summary>How do I get a machine?</summary>
+      <p>Buy $TAPE, then wind on the <a href="/app">Exchange Floor</a>. The wind burns 300,000 $TAPE and pays a 0.02 ETH surcharge (0.018 of it goes straight to the pot). The burn happens inside the wind — the coin is destroyed before the machine exists.</p>
+    </details>
+    <details>
+      <summary>What do the machines actually earn?</summary>
+      <p>Real tokenized stocks on Robinhood Chain. When the pot clears 0.05 ETH it is spent — all of it — on the next stop in the rotation: NVDA, AAPL, TSLA, SPY, GME, PLTR, MSTR, HOOD, COIN, NFLX, GLD. The purchase lands in each machine's vault.</p>
+    </details>
+    <details>
+      <summary>Why an equal split? I own more $TAPE than the next fellow.</summary>
+      <p>The coin buys the machine; the machine earns the print. Ticker No. 1 and Ticker No. 3,333 receive the same share — one machine, one print. If you want more of the tape, wind more machines.</p>
+    </details>
+    <details>
+      <summary>What happens at stop twelve?</summary>
+      <p>The pot buys $TAPE itself and burns it. The dividend wheel shrinks the very coin that builds the machines — the wheel feeds the fire.</p>
+    </details>
+    <details>
+      <summary>Can I sell my machine?</summary>
+      <p>Yes — machines are permanent and transferable. The $TAPE burned to wind them is not; that part is gone forever, which is rather the point.</p>
+    </details>
+    <details>
+      <summary>Is $TAPE live?</summary>
+      <p>The contract address will be posted on the <a href="/app">Exchange Floor</a> the moment it exists. Until then: the machines wait. Anything else claiming to be $TAPE is a forgery.</p>
+    </details>
   </div>
 
   <div class="tape"><span id="tapeline">TICKERS · 3,333 MACHINES · BURN THE COIN, KEEP THE MACHINE, COLLECT THE STOCK &nbsp;·&nbsp; TICKERS · 3,333 MACHINES · BURN THE COIN, KEEP THE MACHINE, COLLECT THE STOCK &nbsp;·&nbsp; </span></div>
