@@ -152,7 +152,7 @@ async function verifyWindTx(hash, from) {
   if (from && (tx.from || '').toLowerCase() !== from.toLowerCase()) return 'tx sender mismatch';
   const wei = BigInt(tx.value || '0x0');
   if (wei < BigInt(Math.round(WIND_ETH * 1e6)) * 10n ** 12n) return 'tx value below the 0.02 ETH surcharge';
-  return null; // verified
+  return { from: tx.from }; // verified
 }
 
 // ── http ──────────────────────────────────────────────────────────────────────
@@ -215,15 +215,18 @@ const server = http.createServer(async (req, res) => {
     const body = await readBody(req);
     if (S.tickers.length >= CAP) return json(res, 400, { error: 'all 3,333 tickers are wound' });
     // treasury armed → the 0.02 ETH surcharge must be a real, verified on-chain payment
+    let paidFrom = null;
     if (TREASURY) {
       try {
-        const err = await verifyWindTx(String(body.tx || ''), String(body.owner || ''));
-        if (err) return json(res, 400, { error: err });
+        const v = await verifyWindTx(String(body.tx || ''), String(body.owner || ''));
+        if (typeof v === 'string') return json(res, 400, { error: v });
+        paidFrom = v.from;
       } catch (e) { return json(res, 502, { error: 'rpc error: ' + e.message }); }
       S.usedTxs = S.usedTxs || [];
       S.usedTxs.push(String(body.tx).toLowerCase());
     }
-    const owner = String(body.owner || 'anonymous').slice(0, 64);
+    // redeem-by-hash: when no owner is given, the tx sender owns the machine
+    const owner = String(body.owner || paidFrom || 'anonymous').slice(0, 64);
     const serial = S.tickers.length + 1;
     const t = {
       id: crypto.randomBytes(6).toString('hex'),

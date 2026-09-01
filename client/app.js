@@ -127,6 +127,7 @@ $('windBtn').addEventListener('click', async () => {
       const paid = await payTreasury(cfg);
       if (!paid) { $('windBtn').disabled = false; return; }
       owner = paid.from; tx = paid.hash;
+      addReceipt(owner, tx);   // local receipt: survives server resets, auto-redeems
     }
     const r = await (await fetch('/api/wind', {
       method: 'POST', headers: { 'content-type': 'application/json' },
@@ -138,5 +139,33 @@ $('windBtn').addEventListener('click', async () => {
   $('windBtn').disabled = false;
 });
 
+// receipts: every paid wind is remembered locally and re-redeemed automatically
+// if the server ever loses state — your tx hash IS your machine.
+function receipts() { try { return JSON.parse(localStorage.tapeReceipts || '[]'); } catch (e) { return []; } }
+function addReceipt(owner, tx) {
+  const r = receipts();
+  if (!r.find((x) => x.tx === tx)) { r.push({ owner, tx }); localStorage.tapeReceipts = JSON.stringify(r); }
+}
+async function redeem(owner, tx, loud) {
+  const r = await (await fetch('/api/wind', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ owner, tx }),
+  })).json();
+  if (r.ok) { if (loud) toast('REDEEMED — TICKER No. ' + r.ticker.serial + ' RESTORED TO THE FLOOR.'); lastPayload = ''; refresh(); return true; }
+  if (loud && r.error !== 'tx already redeemed') toast((r.error || 'redeem failed').toUpperCase());
+  return r.error === 'tx already redeemed';
+}
+async function selfHeal() {
+  for (const rc of receipts()) { try { await redeem(rc.owner, rc.tx, false); } catch (e) {} }
+}
+$('redeemBtn').addEventListener('click', async () => {
+  const tx = ($('redeemTx').value || '').trim();
+  if (!/^0x[0-9a-fA-F]{64}$/.test(tx)) return toast('PASTE THE FULL 0x… TRANSACTION HASH');
+  $('redeemBtn').disabled = true;
+  try { await redeem('', tx, true); } catch (e) { toast('THE WIRE IS DOWN — TRY AGAIN'); }
+  $('redeemBtn').disabled = false;
+});
+
 refresh();
+selfHeal();
 setInterval(refresh, 8000);
