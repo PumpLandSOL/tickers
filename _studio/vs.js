@@ -35,7 +35,7 @@ html,body{font-family:'Old Standard TT',serif;color:var(--ink);background:var(--
 .foot{margin-top:auto;display:flex;justify-content:space-between;font-size:25px;color:var(--faint);padding-top:26px}
 </style></head><body><div class="stage"><div class="ruled"></div><div class="sheet">
   <div class="no te">THE LINEAGE, EXAMINED · SAME ENGINE, OLDER MACHINE, SHARPER WORKS</div>
-  <div class="h" style="margin-bottom:40px">They proved it. <b>We improved it.</b></div>
+  <div class="h" style="margin-bottom:40px">They proved it. <b>We out-built it.</b></div>
   <div class="tbl">
     <div class="hd">
       <div class="c">&nbsp;</div>
@@ -43,14 +43,14 @@ html,body{font-family:'Old Standard TT',serif;color:var(--ink);background:var(--
       <div class="c anc">OTC DESKS<span class="ath">$5M ATH</span></div>
       <div class="c us">TICKERS<span class="ath">LIVE NOW</span></div>
     </div>
-    ${row('The burn', 'once, at hardwire', 'once, at mint', 'never stops — overwind forever ', true)}
-    ${row('Yield boost for conviction', '—', '—', 'Gauge: up to 2.0× print weight', false)}
-    ${row('Max $TAPE dead per machine', 'fixed', '100k – 1M', '1,300,000 fully wound', false)}
+    ${row('The burn', 'once, at hardwire', 'once, at mint', 'never stops — overwind to 2.0×', true)}
+    ${row('First Series plate', '—', '—', 'No. 1–333: +0.2× forever', false)}
+    ${row('Lottery moment', '—', '—', '★ Golden Tape · every print · gauge-weighted', true)}
+    ${row('Jackpot cadence', '—', '—', '◆◆ Double Print: 2× pot + 20% ★ each revolution', true)}
     ${row('Print frequency', '—', 'every 0.1 SOL', '2× as often · every 0.05 ETH', false)}
-    ${row('Lottery moment', '—', '—', '★ Golden Tape · 10% draw every print', true)}
     ${row('Wheel buys the coin back', '—', '—', 'stop 12 = $TAPE buyback & burn', false)}
     ${row('The machine', '1968 terminal', 'an OTC desk', "1871 — Edison's original", false)}
-  </div>
+    </div>
   <div class="foot te"><span>◆ NOT AFFILIATED · ATH FIGURES PER EACH PROJECT · LINEAGE HONORED, WORKS OUR OWN</span><span style="color:var(--ox);font-weight:700">$TAPE LIVE · CA 0x966EAdb63A937C29D9A5FA442aFa292b5502ba92</span></div>
 </div></div></body></html>`;
 
