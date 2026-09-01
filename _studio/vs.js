@@ -41,7 +41,7 @@ html,body{font-family:'Old Standard TT',serif;color:var(--ink);background:var(--
       <div class="c">&nbsp;</div>
       <div class="c anc">QUOTRONS<span class="ath">$15M ATH</span></div>
       <div class="c anc">OTC DESKS<span class="ath">$5M ATH</span></div>
-      <div class="c us">TICKERS<span class="ath">unwritten</span></div>
+      <div class="c us">TICKERS<span class="ath">LIVE NOW</span></div>
     </div>
     ${row('The burn', 'once, at hardwire', 'once, at mint', 'never stops — overwind forever ', true)}
     ${row('Yield boost for conviction', '—', '—', 'Gauge: up to 2.0× print weight', false)}
@@ -51,7 +51,7 @@ html,body{font-family:'Old Standard TT',serif;color:var(--ink);background:var(--
     ${row('Wheel buys the coin back', '—', '—', 'stop 12 = $TAPE buyback & burn', false)}
     ${row('The machine', '1968 terminal', 'an OTC desk', "1871 — Edison's original", false)}
   </div>
-  <div class="foot te"><span>◆ NOT AFFILIATED · ATH FIGURES PER EACH PROJECT · LINEAGE HONORED, WORKS OUR OWN</span><span style="color:var(--ox);font-weight:700">$TAPE · tickersonrh.xyz</span></div>
+  <div class="foot te"><span>◆ NOT AFFILIATED · ATH FIGURES PER EACH PROJECT · LINEAGE HONORED, WORKS OUR OWN</span><span style="color:var(--ox);font-weight:700">$TAPE LIVE · CA 0x966EAdb63A937C29D9A5FA442aFa292b5502ba92</span></div>
 </div></div></body></html>`;
 
 fs.writeFileSync(path.join(OUT, 'tickers-vs.html'), html);
