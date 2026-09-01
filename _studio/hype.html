@@ -1,0 +1,159 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--parch:#f0e6cf;--parch2:#e8dcc0;--ink:#2b2014;--faint:#6b5a41;--ox:#6e2b1e;--line:#3a2c1c}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--parch);color:var(--ink);font-family:'Old Standard TT',serif}
+.ruled{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(58,44,28,.06) 28px)}
+.scene{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.te{font-family:'Special Elite',monospace}
+/* stamp-in: scale down + rotate slightly like a rubber stamp hitting paper */
+@keyframes stampIn{0%{opacity:0;transform:scale(2.4) rotate(-4deg)}60%{opacity:1;transform:scale(.96) rotate(.6deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slam{0%{opacity:0;transform:scale(3)}70%{opacity:1;transform:scale(.97)}100%{opacity:1;transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-14px,8px)}40%{transform:translate(10px,-8px)}60%{transform:translate(-8px,-6px)}80%{transform:translate(8px,6px)}}
+
+/* S1 — 1871. */
+#s1 .yr{font-size:340px;font-weight:700;letter-spacing:.06em}
+#s1 .cap{font-size:38px;font-style:italic;color:var(--faint);margin-top:6px}
+/* S2 — the machine */
+#s2 .cap{font-size:46px;font-style:italic;color:var(--faint);max-width:1300px;line-height:1.4;margin-top:30px}
+#s2 .cap b{color:var(--ox);font-style:normal}
+/* S3 — stat slams */
+.slam{font-family:'Special Elite',monospace;font-size:120px;letter-spacing:.06em;color:var(--ink);line-height:1.1}
+.slam small{display:block;font-size:34px;letter-spacing:.3em;color:var(--ox);margin-top:18px}
+/* S4 — rotation tape sweep */
+#s4{justify-content:center;gap:40px}
+#s4 .lbl{font-family:'Special Elite',monospace;font-size:30px;letter-spacing:.34em;color:var(--faint)}
+.tapeStrip{white-space:nowrap;font-size:150px;font-weight:700;letter-spacing:.08em;will-change:transform}
+.tapeStrip span{margin:0 46px}
+.tapeStrip .burn{color:var(--ox)}
+#s4 .sub{font-size:40px;font-style:italic;color:var(--faint)}
+#s4 .sub b{color:var(--ox);font-style:normal}
+/* S5 — the creed, three lines */
+#s5 .l{font-size:112px;font-weight:700;letter-spacing:.1em;opacity:0}
+#s5 .l.ox{color:var(--ox)}
+/* S6 — endcard */
+#s6 .wm{font-size:230px;font-weight:700;letter-spacing:.14em;line-height:1}
+#s6 .sub{font-family:'Special Elite',monospace;font-size:34px;letter-spacing:.32em;color:var(--ox);margin-top:26px}
+#s6 .url{font-family:'Special Elite',monospace;font-size:44px;font-weight:700;color:var(--ink);margin-top:44px;border:3px solid var(--line);padding:18px 46px;background:var(--parch2);box-shadow:8px 8px 0 rgba(43,32,20,.2)}
+.seal{position:fixed;right:110px;bottom:90px;width:150px;height:150px;border:4px double var(--ox);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ox);font-family:'Special Elite',monospace;font-size:20px;letter-spacing:.14em;transform:rotate(-12deg);opacity:0}
+</style></head><body>
+<div class="ruled"></div>
+
+<div class="scene" id="s1"><div class="yr">1871.</div><div class="cap">The first machine that ever printed a price.</div></div>
+
+<div class="scene" id="s2"><div id="mach"></div><div class="cap">We put <b>3,333</b> of them under glass on <b>Robinhood Chain.</b></div></div>
+
+<div class="scene" id="s3a"><div class="slam">BURN<br>300,000 $TAPE<small>THE COIN DIES FIRST</small></div></div>
+<div class="scene" id="s3b"><div class="slam">WIND<br>ONE MACHINE<small>PERMANENT · 3,333 EVER</small></div></div>
+<div class="scene" id="s3c"><div class="slam">THE POT BUYS<br>REAL STOCKS<small>EVERY 0.05 ETH · SPLIT EQUALLY</small></div></div>
+
+<div class="scene" id="s4">
+  <div class="lbl">THE ROTATION · TWELVE STOPS</div>
+  <div class="tapeStrip" id="strip"><span>NVDA</span><span>AAPL</span><span>TSLA</span><span>SPY</span><span>GME</span><span>PLTR</span><span>MSTR</span><span>HOOD</span><span>COIN</span><span>NFLX</span><span>GLD</span><span class="burn">$TAPE&nbsp;🔥</span></div>
+  <div class="sub">Stop twelve <b>buys the coin and burns it.</b></div>
+</div>
+
+<div class="scene" id="s5">
+  <div class="l" id="c1">BURN THE COIN.</div>
+  <div class="l" id="c2">KEEP THE MACHINE.</div>
+  <div class="l ox" id="c3">COLLECT THE STOCK.</div>
+</div>
+
+<div class="scene" id="s6"><div class="wm">TICKERS</div><div class="sub">$TAPE · SERIES OF 3,333 · ROBINHOOD CHAIN</div><div class="url">tickersonrh.xyz</div><div class="seal" id="seal">WOUND<br>BY FIRE</div></div>
+
+<script>
+// engraved machine, big
+document.getElementById('mach').innerHTML = `<svg width="620" height="434" viewBox="0 0 300 210">
+  <g stroke="#2b2014" fill="none" stroke-width="2.2">
+    <path d="M60 190 Q60 50 150 45 Q240 50 240 190" stroke-width="3"/>
+    <line x1="45" y1="190" x2="255" y2="190"/><rect x="42" y="190" width="216" height="12" fill="#e8dcc0"/><rect x="42" y="190" width="216" height="12"/>
+    <ellipse cx="150" cy="140" rx="52" ry="18"/>
+    <rect x="98" y="108" width="104" height="34" rx="4" fill="#e8dcc0"/><rect x="98" y="108" width="104" height="34" rx="4"/>
+    <circle cx="150" cy="95" r="16"/><circle cx="150" cy="95" r="9"/>
+    <path d="M202 128 L232 120 L232 132 L202 136 Z" fill="#e8dcc0"/><path d="M202 128 L232 120 L232 132 L202 136 Z"/>
+    <line x1="150" y1="142" x2="150" y2="158"/><ellipse cx="150" cy="166" rx="34" ry="9"/>
+  </g></svg>`;
+
+// ---- deterministic, seekable timeline: the recorder calls __seek(ms) per frame ----
+const S = (id) => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const easeOut = (k) => 1 - Math.pow(1 - k, 3);
+
+// stamp: overshoot scale settle
+function stamp(el, t, start, dur) {
+  const k = clamp((t - start) / dur, 0, 1);
+  if (t < start) { el.style.opacity = 0; return; }
+  const e = easeOut(k);
+  const sc = 2.4 - 1.4 * clamp(e / 0.6, 0, 1) - 0.0 + (e > 0.6 ? (1 - (2.4 - 1.4)) * 0 : 0);
+  const scale = e < 0.6 ? 2.4 - (2.4 - 0.96) * (e / 0.6) : 0.96 + (1 - 0.96) * ((e - 0.6) / 0.4);
+  const rot = e < 0.6 ? -4 + 4.6 * (e / 0.6) : 0.6 - 0.6 * ((e - 0.6) / 0.4);
+  el.style.opacity = clamp(e / 0.4, 0, 1);
+  el.style.transform = `scale(${scale.toFixed(4)}) rotate(${rot.toFixed(3)}deg)`;
+}
+function fadeUp(el, t, start, dur) {
+  const k = clamp((t - start) / dur, 0, 1);
+  if (t < start) { el.style.opacity = 0; return; }
+  const e = easeOut(k);
+  el.style.opacity = e; el.style.transform = `translateY(${(46 * (1 - e)).toFixed(1)}px)`;
+}
+function fade(el, t, start, dur) {
+  const k = clamp((t - start) / dur, 0, 1);
+  el.style.opacity = t < start ? 0 : easeOut(k);
+}
+function slam(el, t, start, dur) {
+  const k = clamp((t - start) / dur, 0, 1);
+  if (t < start) { el.style.opacity = 0; return; }
+  const e = easeOut(k);
+  const scale = e < 0.7 ? 3 - (3 - 0.97) * (e / 0.7) : 0.97 + 0.03 * ((e - 0.7) / 0.3);
+  el.style.opacity = clamp(e / 0.3, 0, 1);
+  el.style.transform = `scale(${scale.toFixed(4)})`;
+}
+// window of visibility: [start, end); returns local time or null
+function win(t, start, end) { return t >= start && t < end ? t - start : null; }
+
+const strip = S('strip');
+let stripW = 0;
+
+window.__seek = (t) => {
+  if (!stripW) stripW = strip.scrollWidth;
+  // default all hidden
+  ['s1','s2','s3a','s3b','s3c','s4','s5','s6'].forEach((id) => { S(id).style.opacity = 0; });
+  document.body.style.transform = '';
+
+  let lt;
+  if ((lt = win(t, 200, 2500)) !== null) { S('s1').style.opacity = 1; stamp(S('s1'), lt, 0, 700); if (lt > 2000) S('s1').style.opacity = 1 - (lt - 2000) / 300; }
+  if ((lt = win(t, 2600, 5500)) !== null) { fadeUp(S('s2'), lt, 0, 800); if (lt > 2600) S('s2').style.opacity = 1 - (lt - 2600) / 300; }
+
+  const shakeAmp = (lt2, d) => { const k = clamp(lt2 / d, 0, 1); const a = 14 * (1 - k); document.body.style.transform = `translate(${(Math.sin(lt2 * 0.09) * a).toFixed(1)}px,${(Math.cos(lt2 * 0.075) * a * 0.6).toFixed(1)}px)`; };
+  if ((lt = win(t, 5600, 7250)) !== null) { slam(S('s3a'), lt, 0, 450); if (lt < 350) shakeAmp(lt, 350); if (lt > 1400) S('s3a').style.opacity = 1 - (lt - 1400) / 250; }
+  if ((lt = win(t, 7300, 8950)) !== null) { slam(S('s3b'), lt, 0, 450); if (lt < 350) shakeAmp(lt, 350); if (lt > 1400) S('s3b').style.opacity = 1 - (lt - 1400) / 250; }
+  if ((lt = win(t, 9000, 10800)) !== null) { slam(S('s3c'), lt, 0, 450); if (lt < 350) shakeAmp(lt, 350); if (lt > 1550) S('s3c').style.opacity = 1 - (lt - 1550) / 250; }
+
+  if ((lt = win(t, 10900, 14500)) !== null) {
+    fade(S('s4'), lt, 0, 400);
+    const k = clamp((lt - 100) / 3300, 0, 1);
+    const e = 1 - Math.pow(1 - k, 2.2);
+    const x = 1920 - (1920 - (1920 - stripW - 120)) * e;
+    strip.style.transform = `translateX(${x.toFixed(1)}px)`;
+    if (lt > 3300) S('s4').style.opacity = 1 - (lt - 3300) / 300;
+  }
+
+  if ((lt = win(t, 14600, 17800)) !== null) {
+    S('s5').style.opacity = 1;
+    stamp(S('c1'), lt, 100, 500);
+    stamp(S('c2'), lt, 900, 500);
+    stamp(S('c3'), lt, 1700, 500);
+    if (lt > 2900) S('s5').style.opacity = 1 - (lt - 2900) / 300;
+  }
+
+  if (t >= 17900) { fadeUp(S('s6'), t, 17900, 700); stamp(S('seal'), t, 18700, 500); }
+  return true;
+};
+window.__END = 21000;
+window.__seek(0);
+</script>
+</body></html>

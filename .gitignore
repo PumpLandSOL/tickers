@@ -3,3 +3,7 @@ data.json
 .DS_Store
 _studio/demo-profile/
 _studio/demo-frames/
+_studio/hype-profile/
+_studio/hype-frames/
+_studio/*-profile/
+_studio/*-frames/
