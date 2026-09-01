@@ -49,7 +49,7 @@ async function refresh() {
 
     if (s.rounds.length) {
       $('ledger').innerHTML = s.rounds.map((r) =>
-        '<tr><td>' + r.n + '</td><td><b>' + r.sym + '</b> ' + r.name + '</td><td>' + r.sol.toFixed(4) +
+        '<tr' + (r.double ? ' style="background:rgba(110,43,30,.08)"' : '') + '><td>' + r.n + '</td><td><b>' + r.sym + '</b> ' + r.name + (r.double ? ' <b style="color:#6e2b1e">◆◆ DOUBLE</b>' : '') + '</td><td>' + r.sol.toFixed(4) +
         '</td><td>' + r.perTicker.toFixed(6) + '</td><td>' +
         (r.goldenSerial ? '<b>★ No. ' + r.goldenSerial + '</b> +' + r.golden.toFixed(4) : '—') +
         '</td><td>' + r.tickers + '</td><td>' + ago(r.at) + '</td></tr>').join('');

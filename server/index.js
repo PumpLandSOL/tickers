@@ -97,8 +97,12 @@ function dripFees() {
   spinIfWound();
   save();
 }
+// the Double Print: after every full revolution of the wheel (stop 12 fires),
+// the next print charges to 2× the trigger and the golden cut doubles to 20%.
+const isDouble = () => S.rotationIdx > 0 && S.rotationIdx % ROTATION.length === 0;
 function spinIfWound() {
-  while (S.pot >= POT_TRIGGER && S.tickers.length > 0) {
+  while (S.pot >= POT_TRIGGER * (isDouble() ? 2 : 1) && S.tickers.length > 0) {
+    const dbl = isDouble();
     const spend = S.pot;
     S.pot = 0;
     S.potSpentTotal += spend;
@@ -106,7 +110,7 @@ function spinIfWound() {
     S.rotationIdx++;
     // 90% split by print weight (gauge + First Series plate);
     // 10% golden tape drawn WEIGHTED by the same — overwinding buys lottery odds too
-    const golden = spend * GOLDEN_CUT;
+    const golden = spend * (dbl ? GOLDEN_CUT * 2 : GOLDEN_CUT);
     const base = spend - golden;
     const totalW = S.tickers.reduce((a, t) => a + weightOf(t), 0);
     for (const t of S.tickers) {
@@ -121,7 +125,7 @@ function spinIfWound() {
     S.rounds.unshift({
       n: S.rounds.length + 1, sym: stock.sym, name: stock.name,
       sol: +spend.toFixed(4), perTicker: +(base / totalW).toFixed(6),
-      golden: +golden.toFixed(6), goldenSerial: winner.serial,
+      golden: +golden.toFixed(6), goldenSerial: winner.serial, double: dbl || undefined,
       tickers: S.tickers.length, at: Date.now(),
     });
     if (S.rounds.length > 200) S.rounds.length = 200;
