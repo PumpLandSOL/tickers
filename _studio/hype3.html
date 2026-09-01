@@ -1,0 +1,84 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--parch:#f0e6cf;--parch2:#e8dcc0;--ink:#2b2014;--faint:#6b5a41;--ox:#6e2b1e;--line:#3a2c1c}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--parch);color:var(--ink);font-family:'Old Standard TT',serif;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(58,44,28,.06) 28px)}
+.scene{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.te{font-family:'Special Elite',monospace}
+#s1 .k{font-family:'Special Elite',monospace;font-size:30px;letter-spacing:.34em;color:var(--ox)}
+#s1 .h{font-size:170px;font-weight:700;letter-spacing:.08em;line-height:1.05;margin-top:20px}
+/* the wheel */
+#s2 .wheel{position:relative;width:560px;height:560px}
+#s2 .wheel svg{position:absolute;inset:0}
+#s2 .cap{font-size:44px;font-style:italic;color:var(--faint);margin-top:34px}
+#s2 .cap b{color:var(--ox);font-style:normal}
+.slam{font-family:'Special Elite',monospace;font-size:110px;letter-spacing:.04em;line-height:1.15;color:var(--ink)}
+.slam .ox{color:var(--ox)}
+.slam small{display:block;font-size:32px;letter-spacing:.28em;color:var(--ox);margin-top:20px}
+#s4 .wm{font-size:180px;font-weight:700;letter-spacing:.12em;line-height:1}
+#s4 .sub{font-family:'Special Elite',monospace;font-size:26px;letter-spacing:.3em;color:var(--ox);margin-top:18px}
+#s4 .ca{font-family:'Special Elite',monospace;font-size:26px;color:var(--ink);margin-top:34px;border:3px solid var(--line);padding:14px 30px;background:var(--parch2);box-shadow:8px 8px 0 rgba(43,32,20,.2)}
+</style></head><body>
+
+<div class="scene" id="s1"><div class="k te">AMENDMENT · IN FORCE NOW</div><div class="h">THE DOUBLE<br>PRINT.</div></div>
+
+<div class="scene" id="s2">
+  <div class="wheel"><svg viewBox="0 0 560 560" id="wheelSvg"></svg></div>
+  <div class="cap">Every full turn of the wheel, <b>the next print fires DOUBLE.</b></div>
+</div>
+
+<div class="scene" id="s3"><div class="slam">2× <span class="ox">THE POT</span><br>20% <span class="ox">★ GOLDEN</span><small>ONCE PER REVOLUTION · EVERY REVOLUTION</small></div></div>
+
+<div class="scene" id="s4">
+  <div class="wm">TICKERS</div>
+  <div class="sub te">$TAPE · LIVE ON ROBINHOOD CHAIN</div>
+  <div class="ca te">CA 0x966EAdb63A937C29D9A5FA442aFa292b5502ba92</div>
+</div>
+
+<script>
+// build the 12-stop wheel
+const SY=['NVDA','AAPL','TSLA','SPY','GME','PLTR','MSTR','HOOD','COIN','NFLX','GLD','TAPE'];
+let g='<circle cx="280" cy="280" r="240" fill="none" stroke="#3a2c1c" stroke-width="5"/><circle cx="280" cy="280" r="180" fill="none" stroke="#3a2c1c" stroke-width="2.5"/>';
+SY.forEach((s,i)=>{const a=(i/12)*Math.PI*2-Math.PI/2;const x=280+210*Math.cos(a),y=280+210*Math.sin(a);
+  g+='<text x="'+x+'" y="'+(y+8)+'" text-anchor="middle" font-family="Special Elite" font-size="26" fill="'+(s==='TAPE'?'#6e2b1e':'#2b2014')+'" font-weight="bold">'+s+'</text>';});
+g+='<g id="hand"><line x1="280" y1="280" x2="280" y2="80" stroke="#6e2b1e" stroke-width="8" stroke-linecap="round"/><circle cx="280" cy="280" r="16" fill="#2b2014"/></g>';
+document.getElementById('wheelSvg').innerHTML=g;
+
+const S=(id)=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const eo=(k)=>1-Math.pow(1-k,3);
+function stamp(el,t,st,d){const k=clamp((t-st)/d,0,1);if(t<st){el.style.opacity=0;return}
+  const e=eo(k);const sc=e<.6?2.4-(2.4-.96)*(e/.6):.96+.04*((e-.6)/.4);const rot=e<.6?-4+4.6*(e/.6):.6-.6*((e-.6)/.4);
+  el.style.opacity=clamp(e/.4,0,1);el.style.transform=`scale(${sc.toFixed(4)}) rotate(${rot.toFixed(3)}deg)`}
+function slam(el,t,st,d){const k=clamp((t-st)/d,0,1);if(t<st){el.style.opacity=0;return}
+  const e=eo(k);const sc=e<.7?2.8-(2.8-.97)*(e/.7):.97+.03*((e-.7)/.3);
+  el.style.opacity=clamp(e/.3,0,1);el.style.transform=`scale(${sc.toFixed(4)})`}
+function win(t,a,b){return t>=a&&t<b?t-a:null}
+
+window.__seek=(t)=>{
+  ['s1','s2','s3','s4'].forEach((id)=>{S(id).style.opacity=0});
+  document.body.style.transform='';
+  let lt;
+  if((lt=win(t,150,2100))!==null){S('s1').style.opacity=1;stamp(S('s1'),lt,0,600);if(lt>1600)S('s1').style.opacity=1-(lt-1600)/300}
+  if((lt=win(t,2200,5600))!==null){
+    S('s2').style.opacity=1;stamp(S('s2'),lt,0,450);
+    // hand sweeps the full wheel over the scene, snapping past TAPE at the end
+    const k=clamp((lt-200)/2800,0,1);const e=k<.85?k/.85*0.92:0.92+((k-.85)/.15)*0.08;
+    document.getElementById('hand').setAttribute('transform','rotate('+(e*360).toFixed(2)+' 280 280)');
+    if(lt>3050)S('s2').style.opacity=1-(lt-3050)/300;
+  }
+  if((lt=win(t,5700,7900))!==null){
+    slam(S('s3').firstElementChild,lt,0,450);S('s3').style.opacity=1;
+    if(lt<350){const a=12*(1-lt/350);document.body.style.transform=`translate(${(Math.sin(lt*.09)*a).toFixed(1)}px,${(Math.cos(lt*.07)*a*.6).toFixed(1)}px)`}
+    if(lt>1850)S('s3').style.opacity=1-(lt-1850)/250;
+  }
+  if(t>=8000){S('s4').style.opacity=1;stamp(S('s4'),t,8000,550)}
+  return true;
+};
+window.__END=10000;
+window.__seek(0);
+</script>
+</body></html>
