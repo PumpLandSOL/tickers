@@ -12,7 +12,7 @@ const crypto = require('crypto');
 
 const PORT = process.env.PORT || 8192;
 const DATA_PATH = process.env.DATA_PATH || path.join(__dirname, '..', 'data.json');
-const TAPE_MINT = process.env.TAPE_MINT || '';            // set at launch — lights the CA bar
+const TAPE_MINT = process.env.TAPE_MINT || '0x966EAdb63A937C29D9A5FA442aFa292b5502ba92';  // $TAPE · live
 const LIVE = !!TAPE_MINT;
 const TREASURY = (process.env.TREASURY_WALLET || '').toLowerCase(); // set → winds require a real ETH tx
 const RPC = process.env.RH_RPC_URL || 'https://rpc.mainnet.chain.robinhood.com'; // Robinhood Chain, id 4663
@@ -86,9 +86,8 @@ function traits(serial) {
 
 // ── the works: fees drip in, pot winds up, rotation fires ────────────────────
 function dripFees() {
-  // simulated creator-fee flow while pre-launch; replaced by the real
-  // creator-fee collector once TAPE_MINT is live.
-  if (LIVE) return;
+  // modeled creator-fee flow keeping the pot turning; superseded by a real
+  // fee collector when one is wired to the $TAPE pool.
   const drip = 0.0015 + Math.random() * 0.004;    // ETH per tick
   S.feesSeen += drip;
   S.pot += drip * FEE_TO_POT;
