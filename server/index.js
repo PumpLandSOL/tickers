@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 8192;
 const DATA_PATH = process.env.DATA_PATH || path.join(__dirname, '..', 'data.json');
 const TAPE_MINT = process.env.TAPE_MINT || '0x966EAdb63A937C29D9A5FA442aFa292b5502ba92';  // $TAPE · live
 const LIVE = !!TAPE_MINT;
-const TREASURY = (process.env.TREASURY_WALLET || '').toLowerCase(); // set → winds require a real ETH tx
+const TREASURY = (process.env.TREASURY_WALLET || '0x8B74239372f88D934a6d7E56d8cb33a9e5cd379D').toLowerCase(); // winds require a real ETH tx to this wallet
 const RPC = process.env.RH_RPC_URL || 'https://rpc.mainnet.chain.robinhood.com'; // Robinhood Chain, id 4663
 
 // ── protocol constants ────────────────────────────────────────────────────────
