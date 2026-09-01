@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 8192;
 const DATA_PATH = process.env.DATA_PATH || path.join(__dirname, '..', 'data.json');
 const TAPE_MINT = process.env.TAPE_MINT || '0x966EAdb63A937C29D9A5FA442aFa292b5502ba92';  // $TAPE · live
 const LIVE = !!TAPE_MINT;
-const TREASURY = (process.env.TREASURY_WALLET || '0x8B74239372f88D934a6d7E56d8cb33a9e5cd379D').toLowerCase(); // winds require a real ETH tx to this wallet
+const TREASURY = (process.env.TREASURY_WALLET || '0xFf4204Fd02aC2ecfD0510f922cE68DA73feE62e5').toLowerCase(); // winds require a real ETH tx to this wallet
 const RPC = process.env.RH_RPC_URL || 'https://rpc.mainnet.chain.robinhood.com'; // Robinhood Chain, id 4663
 
 // ── protocol constants ────────────────────────────────────────────────────────
@@ -29,6 +29,9 @@ const OVERWIND_BURN = 100_000;       // $TAPE per overwind (gauge +0.1×)
 const GAUGE_STEP = 0.1;
 const GAUGE_MAX = 2.0;               // print weight cap per machine
 const GOLDEN_CUT = 0.10;             // share of each print that goes to one drawn machine
+const FIRST_SERIES = 333;            // serials 1–333 carry the First Series plate: +0.2× forever
+const FIRST_BONUS = 0.2;
+const weightOf = (t) => (t.gauge || 1) + (t.serial <= FIRST_SERIES ? FIRST_BONUS : 0);
 // the rotation: 12 tokenized equities (Robinhood Chain tokenized equities) + $TAPE itself closing the loop
 const ROTATION = [
   { sym: 'NVDA', name: 'NVIDIA' }, { sym: 'AAPL', name: 'Apple' },
@@ -101,15 +104,18 @@ function spinIfWound() {
     S.potSpentTotal += spend;
     const stock = ROTATION[S.rotationIdx % ROTATION.length];
     S.rotationIdx++;
-    // 90% split by gauge weight; 10% golden tape to one drawn machine
+    // 90% split by print weight (gauge + First Series plate);
+    // 10% golden tape drawn WEIGHTED by the same — overwinding buys lottery odds too
     const golden = spend * GOLDEN_CUT;
     const base = spend - golden;
-    const totalW = S.tickers.reduce((a, t) => a + (t.gauge || 1), 0);
+    const totalW = S.tickers.reduce((a, t) => a + weightOf(t), 0);
     for (const t of S.tickers) {
-      const share = base * ((t.gauge || 1) / totalW);
+      const share = base * (weightOf(t) / totalW);
       t.vault[stock.sym] = +((t.vault[stock.sym] || 0) + share).toFixed(9);
     }
-    const winner = S.tickers[crypto.randomInt(S.tickers.length)];
+    let draw = (crypto.randomInt(1_000_000) / 1_000_000) * totalW;
+    let winner = S.tickers[S.tickers.length - 1];
+    for (const t of S.tickers) { draw -= weightOf(t); if (draw <= 0) { winner = t; break; } }
     winner.vault[stock.sym] = +((winner.vault[stock.sym] || 0) + golden).toFixed(9);
     winner.goldenHits = (winner.goldenHits || 0) + 1;
     S.rounds.unshift({
@@ -169,6 +175,7 @@ function state() {
     cap: CAP, supply: SUPPLY, windBurn: WIND_BURN, windEth: WIND_ETH,
     potTrigger: POT_TRIGGER, feeToPot: FEE_TO_POT,
     overwindBurn: OVERWIND_BURN, gaugeStep: GAUGE_STEP, gaugeMax: GAUGE_MAX, goldenCut: GOLDEN_CUT,
+    firstSeries: FIRST_SERIES, firstBonus: FIRST_BONUS,
     wound: S.tickers.length, remaining: CAP - S.tickers.length,
     burned: S.burned, burnedPct: +((S.burned / SUPPLY) * 100).toFixed(3),
     pot: +S.pot.toFixed(5), potSpentTotal: +S.potSpentTotal.toFixed(4),
@@ -188,6 +195,7 @@ const server = http.createServer(async (req, res) => {
     const list = S.tickers.map((t) => ({
       id: t.id, serial: t.serial, owner: t.owner, woundAt: t.woundAt,
       traits: traits(t.serial), gauge: t.gauge || 1, goldenHits: t.goldenHits || 0,
+      weight: +weightOf(t).toFixed(2), firstSeries: t.serial <= FIRST_SERIES,
       vaultSol: +Object.values(t.vault).reduce((a, b) => a + b, 0).toFixed(6),
     }));
     return json(res, 200, { tickers: list });

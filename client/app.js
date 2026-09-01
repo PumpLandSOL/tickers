@@ -60,7 +60,8 @@ async function refresh() {
       '<div class="serial">TICKER No. ' + t.serial + '</div>' +
       '<div class="traits">' + t.traits.wood + ' base · ' + t.traits.brass + '<br>' + t.traits.glass +
         (t.traits.quirk !== 'none' ? ' · ' + t.traits.quirk : '') + '</div>' +
-      '<div class="gauge">GAUGE ' + t.gauge.toFixed(1) + '×' +
+      '<div class="gauge">' + (t.firstSeries ? '<span style="color:#6e2b1e">FIRST SERIES +0.2×</span> · ' : '') +
+        'PRINTS AT ' + (t.weight || t.gauge).toFixed(1) + '×' +
         (t.goldenHits ? ' · ★ ' + t.goldenHits + ' golden' : '') + '</div>' +
       '<div class="vault">VAULT ≈ ' + t.vaultSol.toFixed(4) + ' ETH in stock</div>' +
       (t.gauge < (s.gaugeMax || 2)
