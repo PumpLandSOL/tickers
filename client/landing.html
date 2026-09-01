@@ -49,7 +49,34 @@ a.btn:hover{background:var(--ox);border-color:var(--ox);color:var(--parch)}
 .faq a{color:var(--ox)}
 footer{text-align:center;font-family:'Special Elite',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--faint);padding:22px 34px 0}
 @media(max-width:700px){.cols{flex-direction:column}.cols>div+div{border-left:0;border-top:1px solid var(--line)}h1{font-size:40px}}
+.topbar{position:sticky;top:0;z-index:50;background:var(--parch2);border-bottom:2px solid var(--line);display:flex;align-items:center;gap:6px;padding:10px 18px}
+.tb-brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;letter-spacing:.12em;color:var(--ink);text-decoration:none;margin-right:14px}
+.tb-nav{display:flex;align-items:center;gap:4px;flex:1;flex-wrap:wrap}
+.tb-nav a{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.1em;color:var(--ink);text-decoration:none;padding:8px 12px;border:1px solid transparent}
+.tb-nav a:hover{border-color:var(--line);background:var(--parch)}
+.tb-nav .new{background:var(--ox);color:var(--parch);font-size:8px;padding:2px 5px;margin-left:5px;letter-spacing:.14em;vertical-align:2px}
+.tb-connect{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.12em;color:var(--parch);background:var(--ink);border:2px solid var(--ink);padding:9px 20px;cursor:pointer}
+.tb-connect:hover{background:var(--ox);border-color:var(--ox)}
+.tb-connect.live{background:var(--parch);color:var(--ink)}
+.strip{border-bottom:1px solid var(--line);background:var(--parch);overflow:hidden;white-space:nowrap;padding:7px 0;font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.08em}
+.strip .inner{display:inline-block;animation:stk 45s linear infinite}
+.strip b{color:var(--ox)}
+.strip .nx{background:var(--ink);color:var(--parch);padding:1px 6px;margin-left:5px;font-size:9px;letter-spacing:.16em}
+.strip span.item{margin:0 22px}
+@keyframes stk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:700px){.tb-nav a{padding:7px 8px}}
 </style></head><body>
+<div class="topbar">
+  <a class="tb-brand" href="/"><svg width="30" height="26" viewBox="0 0 300 210"><g stroke="#2b2014" fill="none" stroke-width="14"><path d="M60 190 Q60 50 150 45 Q240 50 240 190"/><line x1="35" y1="195" x2="265" y2="195"/><ellipse cx="150" cy="130" rx="52" ry="20"/></g></svg>TICKERS</a>
+  <nav class="tb-nav">
+    <a href="/app">Wind<span class="new">MINT</span></a>
+    <a href="/app">The Floor</a>
+    <a href="/docs">Specification</a>
+    <a href="https://x.com/TickersOnRH" target="_blank" rel="noopener">𝕏</a>
+  </nav>
+  <button class="tb-connect" id="tbConnect">CONNECT</button>
+</div>
+<div class="strip"><div class="inner" id="strip"><span class="item">LOADING THE TAPE…</span></div></div>
 <div class="sheet">
   <div class="mast">
     <div class="no">SPECIFICATION FORMING PART OF LETTERS PATENT · SERIES OF 3,333</div>
@@ -149,5 +176,13 @@ async function tick(){try{const s=await(await fetch('/api/state')).json();
   document.getElementById('s-pot').textContent=s.pot.toFixed(3);
   document.getElementById('s-next').textContent=s.nextStock.sym;}catch(e){}}
 tick();setInterval(tick,10000);
+async function strip(){try{const s=await(await fetch('/api/state')).json();
+  const last={};for(const r of s.rounds.slice().reverse())last[r.sym]=r.perTicker;
+  const items=s.rotation.map((r,i)=>'<span class="item"><b>'+r.sym+'</b>'+
+    (last[r.sym]?' '+last[r.sym].toFixed(4)+'Ξ/machine':'')+
+    (i===s.rotationIdx?'<span class="nx">NEXT</span>':'')+'</span>').join('');
+  document.getElementById('strip').innerHTML=items+items;}catch(e){}}
+strip();setInterval(strip,20000);
 </script>
+<script src="connect.js"></script>
 </body></html>

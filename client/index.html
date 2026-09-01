@@ -44,6 +44,9 @@ td b{color:var(--ox)}
 .machine .gauge{font-family:'Special Elite',monospace;font-size:11px;color:var(--faint);margin-top:5px}
 .machine .ow{font-size:10px;padding:8px 6px;margin-top:8px;letter-spacing:.06em}
 .machine .vault{font-family:'Special Elite',monospace;font-size:11px;color:var(--ox);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px}
+.tb-connect{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.12em;color:var(--parch);background:var(--ink);border:2px solid var(--ink);padding:9px 20px;cursor:pointer;width:auto}
+.tb-connect:hover{background:var(--ox);border-color:var(--ox)}
+.tb-connect.live{background:var(--parch);color:var(--ink)}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--parch);
   font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.1em;padding:12px 22px;display:none;z-index:9}
 @media(max-width:860px){.grid{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}}
@@ -53,6 +56,7 @@ td b{color:var(--ox)}
     <a class="brand" href="/">TICKERS</a>
     <span class="tag">THE EXCHANGE FLOOR · $TAPE</span>
     <nav><a href="/">Front page</a><a href="/docs">Specification</a><a href="https://x.com/TickersOnRH" target="_blank" rel="noopener">𝕏</a></nav>
+    <button class="tb-connect" id="tbConnect" style="margin-left:14px">CONNECT</button>
   </header>
   <div class="ca" id="ca">$TAPE CONTRACT — TO BE ANNOUNCED. THE MACHINES WAIT.</div>
 
@@ -90,4 +94,5 @@ td b{color:var(--ox)}
 </div>
 <div class="toast" id="toast"></div>
 <script src="app.js"></script>
+<script src="connect.js"></script>
 </body></html>
