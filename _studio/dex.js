@@ -1,0 +1,59 @@
+'use strict';
+// DexScreener assets: pfp 500x500 + header 1500x500 (3:1), patent-office style.
+const fs = require('fs');
+const path = require('path');
+const OUT = path.join(__dirname, 'out');
+
+const FONTS = `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">`;
+
+const machine = (s, sw) => `<svg width="${300 * s}" height="${210 * s}" viewBox="0 0 300 210">
+  <g stroke="#2b2014" fill="none" stroke-width="${sw || 2.4}">
+    <path d="M60 190 Q60 50 150 45 Q240 50 240 190" stroke-width="${(sw || 2.4) * 1.25}"/>
+    <line x1="45" y1="190" x2="255" y2="190"/><rect x="42" y="190" width="216" height="12" fill="#e8dcc0"/><rect x="42" y="190" width="216" height="12"/>
+    <ellipse cx="150" cy="140" rx="52" ry="18"/><rect x="98" y="108" width="104" height="34" rx="4" fill="#e8dcc0"/><rect x="98" y="108" width="104" height="34" rx="4"/>
+    <circle cx="150" cy="95" r="16"/><circle cx="150" cy="95" r="9"/>
+    <path d="M202 128 L232 120 L232 132 L202 136 Z" fill="#e8dcc0"/><path d="M202 128 L232 120 L232 132 L202 136 Z"/>
+    <line x1="150" y1="142" x2="150" y2="158"/><ellipse cx="150" cy="166" rx="34" ry="9"/>
+  </g></svg>`;
+
+const HEAD = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>
+:root{--parch:#f0e6cf;--parch2:#e8dcc0;--ink:#2b2014;--faint:#6b5a41;--ox:#6e2b1e;--line:#3a2c1c}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:'Old Standard TT',serif;color:var(--ink);background:var(--parch);overflow:hidden}
+.te{font-family:'Special Elite',monospace}
+`;
+
+// PFP 500x500 — machine seal, reads at thumbnail size
+fs.writeFileSync(path.join(OUT, 'tickers-dex-pfp.html'), HEAD + `
+.stage{width:500px;height:500px;position:relative;background:var(--parch2);
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(58,44,28,.07) 28px)}
+.frame{position:absolute;inset:16px;border:5px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.wm{font-size:64px;font-weight:700;letter-spacing:.12em;margin-top:2px}
+.sub{font-family:'Special Elite',monospace;font-size:17px;letter-spacing:.22em;color:var(--ox);margin-top:4px}
+</style></head><body><div class="stage"><div class="frame">
+  ${machine(1.05, 3.2)}
+  <div class="wm">TICKERS</div><div class="sub te">$TAPE · 3,333</div>
+</div></div></body></html>`);
+
+// HEADER 1500x500 (3:1)
+fs.writeFileSync(path.join(OUT, 'tickers-dex-header.html'), HEAD + `
+.stage{width:1500px;height:500px;position:relative;background:var(--parch);
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(58,44,28,.06) 28px)}
+.sheet{position:absolute;inset:26px;background:var(--parch2);border:4px solid var(--line);box-shadow:8px 8px 0 rgba(43,32,20,.2);
+  display:flex;align-items:center;gap:46px;padding:0 60px}
+.h{font-size:104px;font-weight:700;letter-spacing:.12em;line-height:.95}
+.s{font-style:italic;font-size:25px;color:var(--faint);margin-top:8px}
+.t{font-family:'Special Elite',monospace;font-size:15px;letter-spacing:.22em;color:var(--ox);margin-top:14px}
+.rt{position:absolute;right:60px;top:30px;font-family:'Special Elite',monospace;font-size:14px;letter-spacing:.2em;color:var(--faint)}
+.rb{position:absolute;right:60px;bottom:30px;font-family:'Special Elite',monospace;font-size:19px;font-weight:700;color:var(--ox)}
+</style></head><body><div class="stage"><div class="sheet">
+  ${machine(1.35, 2.8)}
+  <div><div class="h">TICKERS</div>
+    <div class="s">Burn the coin. Keep the machine. Collect the stock.</div>
+    <div class="t te">POT BUYS NVDA · AAPL · SPY · GME +8 · ★ GOLDEN TAPE EVERY PRINT</div></div>
+  <div class="rt te">SERIES OF 3,333 · ROBINHOOD CHAIN</div>
+  <div class="rb te">$TAPE · tickersonrh.xyz</div>
+</div></div></body></html>`);
+
+console.log('wrote dex assets');
